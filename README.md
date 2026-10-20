@@ -63,24 +63,7 @@ We ran a complete human-centred design cycle for **university students in Bangla
 
 ## 🔄 Project Pipeline
 
-```mermaid
-flowchart LR
-    A["📋 Survey<br/>17 respondents"]:::formative --> C
-    B["🎤 Interviews<br/>5 participants"]:::formative --> C
-    C["🧩 Affinity diagramming<br/>7 segments"]:::analysis --> D
-    D["💡 4 design takeaways<br/>3 user tasks"]:::analysis --> E
-    E["✏️ Paper sketches<br/>+ peer critique"]:::design --> F
-    F["📱 Aiva hi-fi prototype<br/>24 screens"]:::proto --> G
-    G["🧪 Usability test<br/>8 participants"]:::eval --> H
-    H["🔁 Revised Screens 2-6"]:::revise
 
-    classDef formative fill:#bfdbfe,stroke:#2563eb,stroke-width:2px,color:#1e293b
-    classDef analysis  fill:#ddd6fe,stroke:#7c3aed,stroke-width:2px,color:#1e293b
-    classDef design    fill:#fed7aa,stroke:#ea580c,stroke-width:2px,color:#1e293b
-    classDef proto     fill:#bbf7d0,stroke:#16a34a,stroke-width:2px,color:#1e293b
-    classDef eval      fill:#fef08a,stroke:#ca8a04,stroke-width:2px,color:#1e293b
-    classDef revise    fill:#fbcfe8,stroke:#db2777,stroke-width:2px,color:#1e293b
-```
 
 | Stage | What we did |
 |---|---|
@@ -89,6 +72,10 @@ flowchart LR
 | **3. Design** | Each member sketched alternatives for the same three tasks (nine sketches in total), followed by a peer critique that led to five refinements. |
 | **4. Hi-fi prototype** | Aiva, a 24-screen mobile prototype. |
 | **5. Evaluation** | Task-based usability test with eight participants, then revision of Screens 2-6. |
+
+
+<img width="818" height="258" alt="Methodology-skrtch-diagram" src="https://github.com/user-attachments/assets/469e6ccc-cf8c-419f-b3b6-9382ce4263fc" />
+
 
 ---
 
@@ -224,19 +211,59 @@ The updated screens are in the [Gallery](#-gallery).
 
 ### Aiva prototype: selected screens
 
-<div align="center">
-
-![Aiva selected screens](docs/figures/aiva-hifi-selected-screens.png)
-
 *Onboarding, in-chat transition control, boundary change, relationship settings, privacy and data.*
 
 </div>
 
-### Aiva prototype: all 24 original screens
-
 <div align="center">
 
-![Aiva all 24 screens](docs/figures/aiva-24-screens.png)
+<img width="662" height="354" alt="screen-1" src="https://github.com/user-attachments/assets/33729f54-1d62-4262-8589-72c587fd1f1c" />
+
+Screen-1:Splash Screen & Starting Splash Screens
+
+<img width="659" height="376" alt="screen-2(Task 1)" src="https://github.com/user-attachments/assets/d0db79d8-1677-4d05-ac21-71cd73c80d61" />
+
+Screen-2:Task-1:Choose how romantic interaction can begin
+
+<img width="724" height="396" alt="screen-3(Task 2)" src="https://github.com/user-attachments/assets/f6f3d1b3-3831-4749-b43c-fec6d88fcb30" />
+
+Screen-3:Task-2:Choose Response type when the AI starts becoming romantic
+
+<img width="681" height="396" alt="screen-4(Task 3)" src="https://github.com/user-attachments/assets/e119acac-2e42-4957-8ff1-264746d38c75" />
+
+Screen-4:Task-3:Stop or reverse romantic behavior
+
+<img width="702" height="406" alt="screen-5" src="https://github.com/user-attachments/assets/d2c6cb77-718d-4086-90af-00459fd9b990" />
+
+Screen-5:Quick Relationship Change
+
+<img width="434" height="396" alt="screen-6" src="https://github.com/user-attachments/assets/9940385d-f09d-4a2f-9e54-873b7fdb1080" />
+
+Screen-6:Settings & location
+
+<img width="713" height="410" alt="screen-7" src="https://github.com/user-attachments/assets/418a21f5-3a40-4853-b75b-64fd8570c6d3" />
+
+Screen-7:Settings & language
+
+<img width="652" height="406" alt="screen-8" src="https://github.com/user-attachments/assets/5d820561-eb39-47e4-b3c1-d226bec4c1b3" />
+
+Screen-8:Settings & reset relationship
+
+<img width="395" height="354" alt="screen-9" src="https://github.com/user-attachments/assets/650302ac-4879-405f-a3b0-b1ed76c0c9e9" />
+
+One prototype two themes available
+
+
+
+
+
+
+
+
+
+
+
+
 
 </div>
 
