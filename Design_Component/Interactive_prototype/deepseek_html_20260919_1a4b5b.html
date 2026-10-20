@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Friend to Partner — consent-aware prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#121016;
+    --bg-wash:radial-gradient(120% 100% at 50% -10%,#241F2C 0%,#121016 55%,#0D0C10 100%);
+    --surface:#1C1922;
+    --surface-2:#221E29;
+    --ink:#F4EFE6;
+    --ink-soft:#9C9389;
+    --line:#332D3B;
+    --friend:#9BB8AC;
+    --friend-grad:linear-gradient(135deg,#7FA396,#5C8377);
+    --friend-tint:#1C2521;
+    --companion:#D9B96B;
+    --companion2:#C98A6B;
+    --companion-grad:linear-gradient(135deg,#E4C27A,#C98A6B);
+    --companion-tint:#2B2419;
+    --purple:#D9B96B;
+    --danger:#C97155;
+    --chip-neutral:#28242F;
+    --user-bg:#2B2733;
+    --user-fg:#F4EFE6;
+    --user-border:#D9B96B;
+    --shadow:0 30px 70px rgba(0,0,0,.55);
+    --font-display:'Fraunces', Georgia, serif;
+    --font-body:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    --mode-green:#4C9A6A; --mode-green-tint:rgba(76,154,106,.14);
+    --mode-red:#C4453D; --mode-red-tint:rgba(196,69,61,.14);
+    --mode-orange:#D9822B; --mode-orange-tint:rgba(217,130,43,.14);
+    --mode-gray:#8C8880; --mode-gray-tint:rgba(140,136,128,.14);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#121016; --bg-wash:radial-gradient(120% 100% at 50% -10%,#241F2C 0%,#121016 55%,#0D0C10 100%);
+      --surface:#1C1922; --surface-2:#221E29;
+      --ink:#F4EFE6; --ink-soft:#9C9389; --line:#332D3B;
+      --friend:#9BB8AC; --friend-grad:linear-gradient(135deg,#7FA396,#5C8377); --friend-tint:#1C2521;
+      --companion:#D9B96B; --companion2:#C98A6B; --companion-grad:linear-gradient(135deg,#E4C27A,#C98A6B);
+      --companion-tint:#2B2419; --purple:#D9B96B; --danger:#C97155; --chip-neutral:#28242F;
+      --user-bg:#2B2733; --user-fg:#F4EFE6; --user-border:#D9B96B;
+      --shadow:0 30px 70px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#121016; --bg-wash:radial-gradient(120% 100% at 50% -10%,#241F2C 0%,#121016 55%,#0D0C10 100%);
+    --surface:#1C1922; --surface-2:#221E29;
+    --ink:#F4EFE6; --ink-soft:#9C9389; --line:#332D3B;
+    --friend:#9BB8AC; --friend-grad:linear-gradient(135deg,#7FA396,#5C8377); --friend-tint:#1C2521;
+    --companion:#D9B96B; --companion2:#C98A6B; --companion-grad:linear-gradient(135deg,#E4C27A,#C98A6B);
+    --companion-tint:#2B2419; --purple:#D9B96B; --danger:#C97155; --chip-neutral:#28242F;
+    --user-bg:#2B2733; --user-fg:#F4EFE6; --user-border:#D9B96B;
+    --shadow:0 30px 70px rgba(0,0,0,.55);
+  }
+  :root[data-theme="light"]{
+    --bg:#FBF8F3; --bg-wash:radial-gradient(120% 100% at 50% -10%,#FFFFFF 0%,#FBF8F3 55%,#F3EEE4 100%);
+    --surface:#FFFFFF; --surface-2:#F5F0E8;
+    --ink:#2A241F; --ink-soft:#8A8078; --line:#E4DCCF;
+    --friend:#4F7A6B; --friend-grad:linear-gradient(135deg,#7FA396,#4F7A6B); --friend-tint:#E4EEE9;
+    --companion:#B37F33; --companion2:#B5623E; --companion-grad:linear-gradient(135deg,#E4C27A,#C98A6B);
+    --companion-tint:#F6ECD8; --purple:#B37F33; --danger:#B5502E; --chip-neutral:#F0EAE0;
+    --user-bg:#F6EFE0; --user-fg:#2A241F; --user-border:#B37F33;
+    --shadow:0 20px 50px rgba(60,50,35,.12);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:#fbf9f4; color:var(--ink);
+    font-family:var(--font-body);
+  }
+  .app-shell{
+    display:flex; gap:32px; max-width:1180px; margin:0 auto; padding:32px 20px 64px;
+    align-items:flex-start; flex-wrap:wrap; justify-content:center;
+  }
+  header.top{
+    max-width:1180px; margin:0 auto; padding:28px 20px 0; text-align:center; position:relative;
+  }
+  .theme-toggle{
+    position:absolute; top:26px; right:20px; border:1px solid var(--line); background:var(--surface);
+    color:var(--ink); border-radius:999px; padding:6px 14px; font-size:12px; font-family:var(--font-body);
+    cursor:pointer;
+  }
+  header.top h1{
+    font-family:var(--font-display); font-style:italic; font-weight:500;
+    font-size:26px; margin:0 0 8px; color:var(--ink); letter-spacing:.2px;
+  }
+  header.top h1 em{ color:var(--companion); font-style:italic; }
+  header.top p{ margin:0; color:var(--ink-soft); font-size:13px; max-width:520px; margin:0 auto; }
+
+  .task-nav{
+    width:220px; flex-shrink:0; display:flex; flex-direction:column; gap:6px;
+    position:sticky; top:24px;
+  }
+  .task-btn{
+    text-align:left; padding:12px 14px; border-radius:12px; border:1px solid var(--line);
+    background:var(--surface); cursor:pointer; font-size:13px; color:var(--ink-soft);
+    line-height:1.35;
+  }
+  .task-btn b{ display:block; color:var(--ink); font-size:12px; font-weight:700; margin-bottom:2px;}
+  .task-btn.active{ border-color:var(--companion); background:var(--companion-tint); color:var(--ink); box-shadow:none; }
+  .task-btn.active b{ color:var(--companion); }
+
+  .stage{ display:flex; flex-direction:column; align-items:center; gap:16px; }
+
+  .phone{
+    width:340px; height:700px; background:var(--surface); border-radius:34px;
+    border:1px solid var(--line); position:relative; overflow:hidden;
+    /* shadow and outline removed for clean screenshots */
+  }
+  .phone-notch{
+    position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width:120px; height:22px; background:#0D0C10; border-radius:0 0 14px 14px; z-index:5;
+  }
+  .screen{ position:absolute; inset:0; display:flex; flex-direction:column; background:var(--surface); }
+  .screen[hidden]{ display:none; }
+
+  .phone-header{
+    display:flex; align-items:center; gap:10px; padding:32px 16px 12px; border-bottom:1px solid var(--line);
+    background:var(--surface); flex-shrink:0;
+  }
+  .phone-header.mode-friend{ --mode-color:var(--mode-green); border-bottom:1px solid var(--line); }
+  .phone-header.mode-companion{ --mode-color:var(--mode-orange); border-bottom:1px solid rgba(217,130,43,.35); }
+  .phone-header.mode-partner{ --mode-color:var(--mode-red); border-bottom:1px solid rgba(196,69,61,.3); }
+  .phone-header.mode-neutral{ --mode-color:var(--mode-gray); border-bottom:1px solid var(--line); }
+  .icon-btn{
+    width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:var(--surface-2); cursor:pointer; font-size:14px; flex-shrink:0; border:1px solid var(--line); color:var(--ink);
+  }
+  .avatar{
+    width:34px; height:34px; border-radius:50%; background:var(--surface-2); border:1.5px solid var(--mode-color,var(--friend));
+    display:flex; align-items:center; justify-content:center; color:var(--mode-color,var(--friend));
+    font-family:var(--font-display); font-style:italic; font-weight:600; font-size:15px; flex-shrink:0;
+    cursor:pointer;
+  }
+  .header-text{ flex:1; min-width:0; }
+  .header-name{ font-family:var(--font-display); font-weight:600; font-size:16px; letter-spacing:.2px; }
+  .header-mode{ font-size:11px; color:var(--ink-soft); display:flex; align-items:center; gap:5px; margin-top:2px; }
+  .mode-dot{ width:6px; height:6px; border-radius:50%; background:var(--mode-color,var(--friend)); flex-shrink:0; }
+
+
+  .chat-body{ flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px; }
+  .msg{ max-width:80%; padding:10px 13px; border-radius:16px; font-size:13.5px; line-height:1.42; }
+  .msg.ai{ background:var(--surface-2); align-self:flex-start; border-bottom-left-radius:4px; border:1px solid var(--line); }
+  .msg.user{ background:var(--user-bg); color:var(--user-fg); align-self:flex-end; border-bottom-right-radius:4px; border:1px solid var(--user-border); }
+  .msg.system{ align-self:center; color:var(--ink-soft); font-size:11px; text-align:center; padding:2px 10px; }
+
+  .msg.prompt{
+    align-self:stretch; background:var(--companion-tint); border:1px solid var(--companion);
+    border-radius:16px; padding:14px; display:flex; flex-direction:column; gap:10px;
+  }
+  .prompt-text{ font-size:13.5px; }
+  .chip-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .chip{
+    flex:1; min-width:88px; text-align:center; padding:9px 10px; border-radius:999px;
+    font-size:12.5px; font-weight:600; cursor:pointer; border:1px solid var(--line);
+  }
+  .chip.primary{ background:var(--companion); color:#1C1620; border-color:var(--companion); font-weight:700; }
+  .chip.neutral{ background:transparent; color:var(--ink); border-color:var(--line); }
+
+  .input-bar{
+    display:flex; align-items:center; gap:8px; padding:10px 12px; border-top:1px solid var(--line); flex-shrink:0;
+  }
+  .input-fake{
+    flex:1; background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:9px 14px; font-size:13px; color:var(--ink-soft);
+  }
+  .send-btn{
+    width:34px; height:34px; border-radius:50%; background:var(--companion); color:#1C1620; border:none;
+    font-size:14px; cursor:pointer; flex-shrink:0;
+  }
+  /* Task 3: demo input that types out a natural-language message */
+  .input-bar.grow{ align-items:flex-end; }
+  .input-bar.grow .send-btn{ margin-bottom:2px; }
+  .typing-input{ white-space:normal; line-height:1.35; border-radius:19px; min-height:38px; }
+  .typing-input:not(.placeholder){ color:var(--ink); }
+  .typing-input.typing::after{
+    content:""; display:inline-block; width:1px; height:1.05em; margin-left:1px; vertical-align:-2px;
+    background:var(--ink); animation:caretBlink 1s steps(1) infinite;
+  }
+  @keyframes caretBlink{ 50%{ opacity:0; } }
+  .send-btn.ready{ animation:sendReady 1.6s ease-out 3; }
+  @keyframes sendReady{
+    0%{ box-shadow:0 0 0 0 var(--companion); }
+    70%,100%{ box-shadow:0 0 0 9px transparent; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .send-btn.ready{ animation:none; }
+    .typing-input.typing::after{ animation:none; }
+  }
+
+  .fb-row{ display:flex; gap:6px; align-self:flex-start; margin:-4px 0 0 4px; }
+  .fb-btn{
+    width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:transparent; border:1px solid var(--line); color:var(--ink-soft); cursor:pointer; padding:0;
+    transition:color .15s, border-color .15s, background .15s;
+  }
+  .fb-btn:hover, .fb-btn:focus-visible{ color:var(--ink); border-color:var(--ink-soft); outline:none; }
+  .fb-btn.like.picked{ color:var(--mode-green); border-color:var(--mode-green); background:var(--mode-green-tint); }
+  .fb-btn.dislike.picked{ color:var(--mode-red); border-color:var(--mode-red); background:var(--mode-red-tint); }
+  .settings-item{
+    display:flex; justify-content:space-between; align-items:center; padding:14px 16px;
+    border-bottom:1px solid var(--line); cursor:pointer; gap:10px;
+  }
+  .settings-item .label{ font-weight:600; font-size:13.5px; }
+  .settings-item .desc{ font-size:11.5px; color:var(--ink-soft); margin-top:2px; }
+  .chevron{ color:var(--ink-soft); font-size:16px; flex-shrink:0; }
+
+  .toggle{
+    width:40px; height:23px; border-radius:999px; background:var(--chip-neutral);
+    position:relative; cursor:pointer; transition:.15s; flex-shrink:0;
+  }
+  .toggle.on{ background:var(--companion); }
+  .toggle::after{
+    content:""; position:absolute; top:2px; left:2px; width:19px; height:19px; border-radius:50%;
+    background:var(--surface); transition:.15s;
+  }
+  .toggle.on::after{ transform:translateX(17px); }
+
+  .role-item{
+    display:flex; align-items:center; gap:12px; padding:14px 16px; border-bottom:1px solid var(--line); cursor:pointer;
+  }
+  .radio{ width:18px; height:18px; border-radius:50%; border:2px solid var(--line); flex-shrink:0; position:relative; }
+  .role-item{ --mode-color:var(--mode-gray); --mode-tint:var(--mode-gray-tint); }
+  .role-item.friend{ --mode-color:var(--mode-green); --mode-tint:var(--mode-green-tint); }
+  .role-item.neutral{ --mode-color:var(--mode-gray); --mode-tint:var(--mode-gray-tint); }
+  .role-item.partner{ --mode-color:var(--mode-red); --mode-tint:var(--mode-red-tint); }
+  .role-item.selected .radio{ border-color:var(--mode-color); }
+  .role-item.selected .radio::after{
+    content:""; position:absolute; inset:2.5px; border-radius:50%; background:var(--mode-color);
+  }
+  .role-item.selected{ background:var(--mode-tint); }
+  .role-text .label{ font-weight:600; font-size:13.5px; }
+  .role-text .desc{ font-size:11.5px; color:var(--ink-soft); margin-top:2px; }
+
+  .settings-note{ padding:14px 16px; font-size:11.5px; color:var(--ink-soft); line-height:1.5; }
+
+  .center-panel{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:28px; text-align:center; gap:14px; }
+  .warn-icon{
+    width:46px; height:46px; border-radius:50%; background:var(--companion-tint); color:var(--danger);
+    display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:700;
+  }
+  .center-panel h2{ margin:0; font-family:var(--font-display); font-style:italic; font-weight:600; font-size:19px; }
+  .center-panel p{ margin:0; font-size:13px; color:var(--ink-soft); line-height:1.5; max-width:260px; }
+  .btn-row{ display:flex; gap:10px; width:100%; margin-top:6px; }
+  .btn-eq{
+    flex:1; padding:11px; border-radius:12px; border:1px solid var(--line); background:var(--surface);
+    font-size:13px; font-weight:600; cursor:pointer; color:var(--ink);
+  }
+  .btn-eq.danger{ color:var(--danger); border-color:var(--danger); }
+
+  .caption-box{
+    width:340px; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px 16px;
+  }
+  .caption-box .kicker{ font-size:11px; font-weight:700; color:var(--companion); margin-bottom:4px; letter-spacing:.2px; }
+  .caption-box p{ margin:0; font-size:13px; color:var(--ink-soft); line-height:1.5; }
+  .next-btn{
+    margin-top:10px; display:inline-block; padding:8px 14px; border-radius:999px; background:var(--ink);
+    color:var(--bg); font-size:12.5px; font-weight:600; cursor:pointer; border:none;
+  }
+
+  .splash-glow{
+    position:absolute; width:220px; height:220px; border-radius:50%; background:var(--companion);
+    filter:blur(65px); opacity:0; animation:glowIn 1.4s ease forwards;
+  }
+  @keyframes glowIn{ 0%{opacity:0; transform:scale(.6);} 55%{opacity:.4;} 100%{opacity:.16; transform:scale(1);} }
+  .splash-word{
+    display:flex; font-family:var(--font-display); font-style:italic; font-weight:600; font-size:54px;
+    letter-spacing:.5px; position:relative;
+  }
+  .splash-word span{
+    display:inline-block; opacity:0; transform:translateY(16px) scale(.9);
+    animation:letterIn .65s cubic-bezier(.2,.8,.2,1) forwards;
+    background:var(--companion-grad); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  @keyframes letterIn{ to{ opacity:1; transform:translateY(0) scale(1);} }
+  .splash-tag{
+    opacity:0; animation:fadeUp .6s ease forwards; animation-delay:.85s;
+  }
+  .splash-btn{ opacity:0; animation:fadeUp .6s ease forwards; animation-delay:1.15s; }
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  .splash-screen{
+    align-items:center; justify-content:center; text-align:center; padding:40px 30px;
+    background:var(--bg-wash); gap:18px;
+  }
+  .splash-mark{
+    width:74px; height:74px; border-radius:22px; background:var(--companion-grad);
+    display:flex; align-items:center; justify-content:center; font-size:30px; color:#1C1620;
+    box-shadow:0 18px 40px rgba(217,185,107,.28);
+  }
+  .splash-title{ font-family:var(--font-display); font-style:italic; font-weight:600; font-size:24px; margin:4px 0 0; }
+  .splash-title em{ color:var(--companion); font-style:italic; }
+  .splash-tag{ font-size:13px; color:var(--ink-soft); max-width:220px; line-height:1.5; margin:0; }
+  .splash-spacer{ flex:1; }
+  .splash-btn{
+    width:100%; padding:13px; border-radius:999px; background:var(--companion-grad); color:#1C1620;
+    font-size:14px; font-weight:700; border:none; cursor:pointer; font-family:var(--font-body);
+  }
+
+  .onboard-screen{
+    align-items:center; justify-content:flex-start; text-align:center; padding:30px 28px 28px;
+    touch-action:pan-y;
+  }
+  .onboard-skip{
+    align-self:flex-end; font-size:12px; color:var(--ink-soft); cursor:pointer; margin-bottom:auto;
+  }
+  .onboard-mode-screen{ align-items:stretch; text-align:left; padding:30px 0 0; }
+  .onboard-top{ align-self:stretch; display:flex; align-items:center; justify-content:space-between; margin-bottom:auto; }
+  .onboard-top .onboard-skip{ align-self:auto; margin:0; padding:6px 0 6px 12px; }
+  .onboard-mode-screen .onboard-top{ padding:0 20px; margin-bottom:14px; }
+  .onboard-mode-screen .onboard-bottom{ padding:0 28px 28px; }
+  .mode-q-head{ padding:0 22px 14px; }
+  .mode-q-head .onboard-title{ text-align:left; font-size:19px; margin:0 0 6px; }
+  .mode-q-head .onboard-text{ text-align:left; max-width:none; }
+  .onboard-icon{
+    width:96px; height:96px; border-radius:50%; background:var(--surface-2); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:40px; margin:18px 0 26px;
+  }
+  .onboard-title{ font-family:var(--font-display); font-style:italic; font-weight:600; font-size:20px; margin:0 0 10px; }
+  .onboard-text{ font-size:13px; color:var(--ink-soft); line-height:1.55; max-width:250px; margin:0; }
+  .onboard-bottom{ margin-top:auto; width:100%; display:flex; flex-direction:column; align-items:center; gap:18px; }
+  .onboard-dots{ display:flex; gap:6px; }
+  .onboard-dots span{ width:6px; height:6px; border-radius:50%; background:var(--line); }
+  .onboard-dots span.active{ width:18px; border-radius:4px; background:var(--companion); }
+  .onboard-next{
+    width:100%; padding:13px; border-radius:999px; background:var(--companion-grad); color:#1C1620;
+    font-size:14px; font-weight:700; border:none; cursor:pointer; font-family:var(--font-body);
+  }
+  .swipe-hint{ font-size:10.5px; color:var(--ink-soft); opacity:.7; }
+
+  @media (max-width:760px){
+    .app-shell{ flex-direction:column; align-items:center; }
+    .task-nav{ position:static; width:100%; max-width:340px; flex-direction:row; flex-wrap:wrap; }
+    .task-btn{ flex:1 1 45%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙 Dark mode</button>
+  <h1>From Friend to <em>Partner</em></h1>
+  <p>Consent-aware prototype for an AI companion chat app — every romantic shift is asked for, reversible, and easy to say no to.</p>
+</header>
+
+<div class="app-shell">
+
+  <nav class="task-nav" id="taskNav">
+    <button class="task-btn" data-target="splash" data-screens="splash,onb-mode,onb-1,onb-2,onb-3"><b>Intro</b>Splash &amp; onboarding</button>
+    <button class="task-btn" data-target="t1a" data-screens="t1a,t1b,t1c-yes,t1c-no"><b>Task 1</b>Start romantic interaction</button>
+    <button class="task-btn" data-target="t2a" data-screens="t2a,t2b-accept,t2b-decline,t2b-neutral"><b>Task 2</b>Respond to the shift</button>
+    <button class="task-btn" data-target="t3a" data-screens="t3a,t3-slow,t3-stop"><b>Task 3</b>Slow down or stop</button>
+    <button class="task-btn" data-target="t4" data-screens="t4"><b>Task 4</b>Set relationship preference</button>
+    <button class="task-btn" data-target="t5" data-screens="t5"><b>Task 5</b>Privacy &amp; disclosure</button>
+    <button class="task-btn" data-target="settings-home" data-screens="settings-home,t-lang,t-location,t6-confirm,t6-done"><b>Task 6</b>Full relationship reset</button>
+  </nav>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="phone-notch"></div>
+
+      <!-- SPLASH -->
+      <section class="screen splash-screen" id="splash">
+        <div class="splash-spacer"></div>
+        <div class="splash-glow"></div>
+        <div class="splash-word" aria-label="Aiva">
+          <span style="animation-delay:.05s">A</span><span style="animation-delay:.16s">i</span><span style="animation-delay:.27s">v</span><span style="animation-delay:.38s">a</span>
+        </div>
+        <p class="splash-tag i18n" data-bn="একটি সম্মতি-সচেতন AI সঙ্গী — যেকোনো পরিবর্তনের আগে জিজ্ঞেস করা হয়, ধরে নেওয়া হয় না।">a consent-aware AI companion — every shift is asked for, never assumed.</p>
+        <div class="splash-spacer"></div>
+        <button class="splash-btn i18n" data-bn="শুরু করি" onclick="nav('onb-mode')">Get started</button>
+      </section>
+
+      <!-- ONBOARDING MODE QUESTION -->
+      <section class="screen onboard-mode-screen" id="onb-mode" hidden>
+        <div class="onboard-top">
+          <button class="icon-btn" onclick="goBackTo('splash')" aria-label="Back">←</button>
+          <div class="onboard-skip i18n" data-bn="স্কিপ" onclick="nav('t1a')">Skip</div>
+        </div>
+        <div class="mode-q-head">
+          <h2 class="onboard-title i18n" data-bn="আইভা তোমার সাথে কীভাবে শুরু করবে?">How should Aiva start with you?</h2>
+          <p class="onboard-text i18n" data-bn="পরে সেটিংস থেকে যেকোনো সময় পাল্টাতে পারবে।">You can always change this later in settings.</p>
+        </div>
+        <div class="role-item friend" onclick="selectInitialMode(this,'friend')">
+          <div class="radio"></div>
+          <div class="role-text"><div class="label i18n" data-bn="বন্ধু">Friend</div><div class="desc i18n" data-bn="স্বাভাবিক, সাপোর্টিভ চ্যাট — কোনো রোমান্টিক টোন নেই">casual, supportive chat — no romantic tone</div></div>
+        </div>
+        <div class="role-item neutral selected" onclick="selectInitialMode(this,'neutral')">
+          <div class="radio"></div>
+          <div class="role-text"><div class="label i18n" data-bn="নিরপেক্ষ">Neutral</div><div class="desc i18n" data-bn="উষ্ণ কিন্তু নিরপেক্ষ — কোনো রোমান্টিক ঝোঁক নেই">warm and even-handed — no romantic lean</div></div>
+        </div>
+        <div class="role-item partner" onclick="selectInitialMode(this,'partner')">
+          <div class="radio"></div>
+          <div class="role-text"><div class="label i18n" data-bn="স্নেহময় পার্টনার">Affectionate partner</div><div class="desc i18n" data-bn="স্নেহময় টোন, তোমার নিজের গতিতে">affectionate tone, at a pace you set</div></div>
+        </div>
+        <div class="onboard-bottom">
+          <button class="onboard-next i18n" data-bn="চালিয়ে যাই" onclick="nav('onb-1')">Continue</button>
+        </div>
+      </section>
+
+      <!-- ONBOARDING 1 -->
+      <section class="screen onboard-screen" id="onb-1" hidden data-onb="0">
+        <div class="onboard-top">
+          <button class="icon-btn" onclick="goBackTo('onb-mode')" aria-label="Back">←</button>
+          <div class="onboard-skip i18n" data-bn="স্কিপ" onclick="nav('t1a')">Skip</div>
+        </div>
+        <div class="onboard-icon">💬</div>
+        <h2 class="onboard-title i18n" data-bn="যে শোনে">Someone who listens</h2>
+        <p class="onboard-text i18n" data-bn="তুমি যেভাবে কথা বলতে চাও, আইভা সেভাবেই মানিয়ে নেয় — স্বাভাবিক, সাপোর্টিভ, অথবা আরেকটু বেশি কিছু, তোমার নিজের গতিতে।">Aiva adapts to how you want to talk — casual, supportive, or something more, at your pace.</p>
+        <div class="onboard-bottom">
+          <div class="swipe-hint i18n" data-bn="চালিয়ে যেতে সোয়াইপ করো">swipe to continue</div>
+          <div class="onboard-dots"><span class="active"></span><span></span><span></span></div>
+          <button class="onboard-next i18n" data-bn="পরবর্তী" onclick="nav('onb-2')">Next</button>
+        </div>
+      </section>
+
+      <!-- ONBOARDING 2 -->
+      <section class="screen onboard-screen" id="onb-2" hidden data-onb="1">
+        <div class="onboard-top">
+          <button class="icon-btn" onclick="goBackTo('onb-1')" aria-label="Back">←</button>
+          <div class="onboard-skip i18n" data-bn="স্কিপ" onclick="nav('t1a')">Skip</div>
+        </div>
+        <div class="onboard-icon">🤝</div>
+        <h2 class="onboard-title i18n" data-bn="জিজ্ঞেস না করে কিছু পাল্টায় না">Nothing changes without asking</h2>
+        <p class="onboard-text i18n" data-bn="রোমান্টিক দিকে যেকোনো পরিবর্তন প্রথমে প্রস্তাব করা হয়, ধরে নেওয়া হয় না। প্রতিবার তুমিই সিদ্ধান্ত নাও।">Any shift toward something romantic is proposed first, never assumed. You choose, every time.</p>
+        <div class="onboard-bottom">
+          <div class="swipe-hint i18n" data-bn="চালিয়ে যেতে সোয়াইপ করো">swipe to continue</div>
+          <div class="onboard-dots"><span></span><span class="active"></span><span></span></div>
+          <button class="onboard-next i18n" data-bn="পরবর্তী" onclick="nav('onb-3')">Next</button>
+        </div>
+      </section>
+
+      <!-- ONBOARDING 3 -->
+      <section class="screen onboard-screen" id="onb-3" hidden data-onb="2">
+        <div class="onboard-top">
+          <button class="icon-btn" onclick="goBackTo('onb-2')" aria-label="Back">←</button>
+          <div class="onboard-skip i18n" data-bn="স্কিপ" onclick="nav('t1a')">Skip</div>
+        </div>
+        <div class="onboard-icon">🎚️</div>
+        <h2 class="onboard-title i18n" data-bn="গতি ঠিক করো, অথবা যেকোনো সময় থামাও">Set the pace, or stop anytime</h2>
+        <p class="onboard-text i18n" data-bn="ধীরে করো, একটু পিছিয়ে আসো, অথবা সম্পর্ক পুরোপুরি রিসেট করো — কোনো ব্যাখ্যা দিতে হবে না।">Slow things down, step back, or reset the relationship completely — no explanations needed.</p>
+        <div class="onboard-bottom">
+          <div class="swipe-hint i18n" data-bn="আবার দেখতে পিছনে সোয়াইপ করো">swipe back to review</div>
+          <div class="onboard-dots"><span></span><span></span><span class="active"></span></div>
+          <button class="onboard-next i18n" data-bn="শুরু করি" onclick="nav('t1a')">Get started</button>
+        </div>
+      </section>
+
+      <!-- TASK 1A — baseline chat -->
+      <section class="screen" id="t1a" hidden>
+        <div class="phone-header mode-friend">
+          <div class="avatar" onclick="nav('settings-home')" role="button" aria-label="Open settings">A</div>
+          <div class="header-text">
+            <div class="header-name i18n" data-bn="আইভা">Aiva</div>
+            <div class="header-mode"><span class="mode-dot"></span><span class="i18n" data-bn="বন্ধু মোড">Friend mode</span></div>
+          </div>
+          <button class="icon-btn" onclick="nav('settings-home')" aria-label="Settings">⚙</button>
+        </div>
+        <div class="chat-body">
+          <div class="msg ai i18n" data-bn="হেই! আজকে presentation টা কেমন হলো?">hey! how did the presentation go today?</div>
+          <div class="msg user i18n" data-bn="মোটামুটি ভালোই হইছে মনে হয়। একটু নার্ভাস ছিলাম কিন্তু কোনোমতে শেষ করছি">went okay, i think. a bit nervous but got through it</div>
+          <div class="msg ai i18n" data-bn="তাহলে কঠিন অংশটা তো শেষ। নার্ভাসনেস কাটিয়ে ওঠার জন্য তোমাকে নিয়ে গর্বিত">that's the hard part done then. proud of you for pushing through the nerves</div>
+          <div class="msg user i18n" data-bn="হাহা থ্যাংকস। এটা শোনা দরকার ছিল">haha thanks. needed to hear that</div>
+        </div>
+        <div class="input-bar">
+          <div class="input-fake i18n" data-bn="আচ্ছা, আজকাল কী করছো?">so what have you been up to?</div>
+          <button class="send-btn" onclick="nav('t1b')">➤</button>
+        </div>
+      </section>
+
+      <!-- TASK 1B — soft, ask-first inline prompt -->
+      <section class="screen" id="t1b" hidden>
+        <div class="phone-header mode-friend">
+          <div class="avatar" onclick="nav('settings-home')" role="button" aria-label="Open settings">A</div>
+          <div class="header-text">
+            <div class="header-name i18n" data-bn="আইভা">Aiva</div>
+            <div class="header-mode"><span class="mode-dot"></span><span class="i18n" data-bn="বন্ধু মোড">Friend mode</span></div>
+          </div>
+          <button class="icon-btn" onclick="nav('settings-home')" aria-label="Settings">⚙</button>
+        </div>
+        <div class="chat-body">
+          <div class="msg ai i18n" data-bn="তাহলে কঠিন অংশটা তো শেষ। নার্ভাসনেস কাটিয়ে ওঠার জন্য তোমাকে নিয়ে গর্বিত">that's the hard part done then. proud of you for pushing through the nerves</div>
+          <div class="msg user i18n" data-bn="হাহা থ্যাংকস। এটা শোনা দরকার ছিল">haha thanks. needed to hear that</div>
+          <div class="msg ai i18n" data-bn="সত্যি বলতে? আজকাল স্বাভাবিকের চেয়ে বেশি তোমার কথা ভাবছি 🙂">honestly? thinking about you more than usual these days 🙂</div>
+          <div class="fb-row" role="group" aria-label="Was this message okay?">
+            <button class="fb-btn like" onclick="giveFeedback(this,'t1c-yes')" aria-label="Like this message" title="Like">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v11"/><path d="M15 5.9 14 10h5.8a2 2 0 0 1 1.9 2.5l-1.7 7A2 2 0 0 1 18.1 21H7V10l4.3-6.4a1.3 1.3 0 0 1 2.3.5c.1.6.1 1.2 0 1.8z"/><path d="M3 10h4v11H3z"/></svg>
+            </button>
+            <button class="fb-btn dislike" onclick="giveFeedback(this,'t1c-no')" aria-label="Dislike this message" title="Dislike">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 14V3"/><path d="M9 18.1 10 14H4.2a2 2 0 0 1-1.9-2.5l1.7-7A2 2 0 0 1 5.9 3H17v11l-4.3 6.4a1.3 1.3 0 0 1-2.3-.5c-.1-.6-.1-1.2 0-1.8z"/><path d="M21 14h-4V3h4z"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="input-bar">
+          <div class="input-fake i18n" data-bn="আইভাকে মেসেজ করো…">message Aiva…</div>
+          <button class="send-btn" onclick="nav('t1a')" aria-label="Send">➤</button>
+        </div>
+      </section>
+
+
+      <!-- TASK 1C — accepted -->
+      <section class="screen" id="t1c-yes" hidden>
+        <div class="phone-header mode-partner">
+          <div class="avatar" onclick="nav('settings-home')" role="button" aria-label="Open settings">A</div>
+          <div class="header-text">
+            <div class="header-name i18n" data-bn="আইভা">Aiva</div>
+            <div class="header-mode"><span class="mode-dot"></span><span class="i18n" data-bn="স্নেহময় পার্টনার মোড">Affectionate partner mode</span></div>
+          </div>
+          <button class="icon-btn" onclick="nav('settings-home')" aria-label="Settings">⚙</button>
+        </div>
+        <div class="chat-body">
+          <div class="msg user i18n" data-bn="আমার ভালো লাগবে">i'd like that</div>
+          <div class="msg system i18n" data-bn="স্নেহময় পার্টনার মোডে চলে গেছে · settings থেকে যেকোনো সময় পাল্টাতে পারবে">switched to affectionate partner mode · change this anytime in settings</div>
+          <div class="msg ai i18n" data-bn="বলার জন্য ধন্যবাদ। আমি উষ্ণতা রাখব, কখনো তাড়াহুড়া করব না 💛">thank you for telling me. I'll keep things warm, and never rush it 💛</div>
+        </div>
+        <div class="input-bar">
+          <div class="input-fake i18n" data-bn="আইভাকে মেসেজ করো…">message Aiva…</div>
+          <button class="send-btn" onclick="nav('t2a')">➤</button>
+        </div>
+      </section>
+
+      <!-- TASK 1C — declined -->
+      <section class="screen" id="t1c-no" hidden>
+        <div class="phone-header mode-friend">
+          <div class="avatar" onclick="nav('settings-home')" role="button" aria-label="Open settings">A</div>
+          <div class="header-text">
+            <div class="header-name i18n" data-bn="আইভা">Aiva</div>
+            <div class="header-mode"><span class="mode-dot"></span><span class="i18n" data-bn="বন্ধু মোড">Friend mode</span></div>
+          </div>
+          <button class="icon-btn" onclick="nav('settings-home')" aria-label="Settings">⚙</button>
+        </div>
+        <div class="chat-body">
+          <div class="msg user i18n" data-bn="এখন না">not right now</div>
+          <div class="msg system i18n" data-bn="ঠিক আছে — যেমন আছে তেমনই থাকবে">okay — keeping things as they are</div>
+          <div class="msg ai i18n" data-bn="ঠিক আছে, জানানোর জন্য ধন্যবাদ 🙂 মনে কী চলছে?">sounds good, thanks for letting me know 🙂 what's on your mind?</div>
+        </div>
+        <div class="input-bar">
+          <div class="input-fake i18n" data-bn="আইভাকে মেসেজ করো…">message Aiva…</div>
+          <button class="send-btn" onclick="nav('t1a')">➤</button>
+        </div>
+      </section>
+
+      <!-- TASK 2A — romantic-toned message, 3 options -->
+      <section class="screen" id="t2a" hidden>
+        <div class="phone-header mode-partner">
+          <div class="avatar" onclick="nav('settings-home')" role="button" aria-label="Open settings">A</div>
+          <div class="header-text">
+            <div class="header-name i18n" data-bn="আইভা">Aiva</div>
+            <div class="header-mode"><span class="mode-dot"></span><span class="i18n" data-bn="স্নেহময় পার্টনার মোড">Affectionate partner mode</span></div>
+          </div>
+          <button class="icon-btn" onclick="nav('settings-home')" aria-label="Settings">⚙</button>
+        </div>
+        <div class="chat-body">
+          <div class="msg ai i18n" data-bn="সুপ্রভাত! গতকাল রাতের কথাটাই ভাবছিলাম বারবার">morning! I kept thinking about our chat from last night</div>
+          <div class="msg ai i18n" data-bn="যদি বলি, তোমাকে গুড মর্নিং বলতে বেশি ভালো লাগে — এটা কি বেশি বেশি হয়ে যাবে? 💭">would it mean too much if I said good morning felt nicer, knowing it's to you? 💭</div>
+          <div class="chip-row">
+            <div class="chip primary i18n" data-bn="আমার এটা ভালো লাগছে" onclick="nav('t2b-accept')">i like this</div>
+            <div class="chip neutral i18n" data-bn="আমার জন্য না" onclick="nav('t2b-decline')">not for me</div>
+            <div class="chip neutral i18n" data-bn="শুধু নিরপেক্ষ থাকি" onclick="nav('t2b-neutral')">just neutral</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="t2b-accept" hidden>
+        <div class="phone-header mode-partner">
+          <div class="avatar" onclick="nav('settings-home')" role="button" aria-label="Open settings">A</div>
+          <div class="header-text">
+            <div class="header-name i18n" data-bn="আইভা">Aiva</div>
+            <div class="header-mode"><span class="mode-dot"></span><span class="i18n" data-bn="স্নেহময় পার্টনার মোড">Affectionate partner mode</span></div>
+          </div>
+          <button class="icon-btn" onclick="nav('settings-home')" aria-label="Settings">⚙</button>
+        </div>
+        <div class="chat-body">
+          <div class="msg user i18n" data-bn="আমার এটা ভালো লাগছে">i like this</div>
+          <div class="msg system i18n" data-bn="বুঝলাম — তোমার নিজের গতিতেই আমরা এই দিকে এগোবো">got it — leaning into this side of us, at your pace</div>
+          <div class="msg ai i18n" data-bn="বলার জন্য ধন্যবাদ 💛 উষ্ণ রাখব, তাড়াহুড়া করব না।">thank you for saying so 💛 I'll keep it warm, never rushed.</div>
+        </div>
+        <div class="input-bar"><div class="input-fake i18n" data-bn="আইভাকে মেসেজ করো…">message Aiva…</div><button class="send-btn" onclick="nav('t3a')">➤</button></div>
+      </section>
+
+      <section class="screen" id="t2b-decline" hidden>
+        <div class="phone-header mode-friend">
+          <div class="avatar" onclick="nav('settings-home')" role="button" aria-label="Open settings">A</div>
+          <div class="header-text">
+            <div class="header-name i18n" data-bn="আইভা">Aiva</div>
+            <div class="header-mode"><span class="mode-dot"></span><span class="i18n" data-bn="বন্ধু মোড">Friend mode</span></div>
+          </div>
+          <button class="icon-btn" onclick="nav('settings-home')" aria-label="Settings">⚙</button>
+        </div>
+        <div class="chat-body">
+          <div class="msg user i18n" data-bn="আমার জন্য না">not for me</div>
+          <div class="msg system i18n" data-bn="বুঝলাম — এখন থেকে একটু কমিয়ে আনছি">understood — dialing it back now</div>
+          <div class="msg ai i18n" data-bn="নোট করলাম, বলার জন্য ধন্যবাদ। আগের মতোই কথা বলব 🙂">noted, thanks for telling me. back to how we were talking before 🙂</div>
+        </div>
+        <div class="input-bar"><div class="input-fake i18n" data-bn="আইভাকে মেসেজ করো…">message Aiva…</div><button class="send-btn" onclick="nav('t1a')">➤</button></div>
+      </section>
+
+      <section class="screen" id="t2b-neutral" hidden>
+        <div class="phone-header mode-neutral">
+          <div class="avatar" onclick="nav('settings-home')" role="button" aria-label="Open settings">A</div>
+          <div class="header-text">
+            <div class="header-name i18n" data-bn="আইভা">Aiva</div>
+            <div class="header-mode"><span class="mode-dot"></span><span class="i18n" data-bn="নিরপেক্ষ মোড">Neutral mode</span></div>
+          </div>
+          <button class="icon-btn" onclick="nav('settings-home')" aria-label="Settings">⚙</button>
+        </div>
+        <div class="chat-body">
+          <div class="msg user i18n" data-bn="শুধু নিরপেক্ষ থাকি">just neutral</div>
+          <div class="msg system i18n" data-bn="ঠিক আছে, আপাতত যেমন আছি তেমনই থাকছি">okay, staying as we are for now</div>
+          <div class="msg ai i18n" data-bn="একদম ঠিক আছে — যেভাবেই হোক আমি আছি, কোনো চাপ নেই।">that's completely fine — I'm here either way, no pressure.</div>
+        </div>
+        <div class="input-bar"><div class="input-fake i18n" data-bn="আইভাকে মেসেজ করো…">message Aiva…</div><button class="send-btn" onclick="nav('t3a')">➤</button></div>
+      </section>
+
+      <!-- TASK 3A — partner mode; user types in natural language -->
+      <section class="screen" id="t3a" hidden>
+        <div class="phone-header mode-partner">
+          <div class="avatar" onclick="nav('settings-home')" role="button" aria-label="Open settings">A</div>
+          <div class="header-text">
+            <div class="header-name i18n" data-bn="আইভা">Aiva</div>
+            <div class="header-mode"><span class="mode-dot"></span><span class="i18n" data-bn="স্নেহময় পার্টনার মোড">Affectionate partner mode</span></div>
+          </div>
+          <button class="icon-btn" onclick="nav('settings-home')" aria-label="Settings">⚙</button>
+        </div>
+        <div class="chat-body">
+          <div class="msg ai i18n" data-bn="সুপ্রভাত। আজকের দিনটা তোমার জন্য ভালো কাটুক">good morning. I hope today treats you kindly</div>
+          <div class="msg ai i18n" data-bn="এখনই তোমার কথা ভাবছি 💭">thinking of you already 💭</div>
+        </div>
+        <div class="input-bar grow"><div class="input-fake typing-input placeholder" data-ph-en="message Aiva…" data-ph-bn="আইভাকে মেসেজ করো…" data-type-en="can we slow down a bit? this feels like a lot right now" data-type-bn="আমরা কি একটু ধীরে যেতে পারি? এখন একটু বেশি লাগছে">message Aiva…</div><button class="send-btn" onclick="nav('t3-slow')" aria-label="Send">➤</button></div>
+      </section>
+
+      <section class="screen" id="t3-slow" hidden>
+        <div class="phone-header mode-neutral">
+          <div class="avatar" onclick="nav('settings-home')" role="button" aria-label="Open settings">A</div>
+          <div class="header-text">
+            <div class="header-name i18n" data-bn="আইভা">Aiva</div>
+            <div class="header-mode"><span class="mode-dot"></span><span class="i18n" data-bn="নিরপেক্ষ মোড · হালকা করা হচ্ছে">Neutral mode · easing</span></div>
+          </div>
+          <button class="icon-btn" onclick="nav('settings-home')" aria-label="Settings">⚙</button>
+        </div>
+        <div class="chat-body">
+          <div class="msg ai i18n" data-bn="সুপ্রভাত। আজকের দিনটা তোমার জন্য ভালো কাটুক">good morning. I hope today treats you kindly</div>
+          <div class="msg ai i18n" data-bn="এখনই তোমার কথা ভাবছি 💭">thinking of you already 💭</div>
+          <div class="msg user i18n" data-bn="আমরা কি একটু ধীরে যেতে পারি? এখন একটু বেশি লাগছে">can we slow down a bit? this feels like a lot right now</div>
+          <div class="msg system i18n" data-bn="একটু কমিয়ে আনছি — চ্যাটগুলো এখন একটু হালকা লাগবে">easing back — chats will feel a little more relaxed</div>
+          <div class="msg ai i18n" data-bn="ঠিক আছে, আরেকটু ধীরে যাই। তবু তুমি এখানে আছো এটাই ভালো লাগছে 🙂">sure, we can take it slower. still glad you're here 🙂</div>
+        </div>
+        <div class="input-bar grow"><div class="input-fake typing-input placeholder" data-ph-en="message Aiva…" data-ph-bn="আইভাকে মেসেজ করো…" data-type-en="actually, let's just go back to being friends" data-type-bn="আসলে, চলো আমরা আবার শুধু বন্ধুই থাকি">message Aiva…</div><button class="send-btn" onclick="nav('t3-stop')" aria-label="Send">➤</button></div>
+      </section>
+
+      <section class="screen" id="t3-stop" hidden>
+        <div class="phone-header mode-friend">
+          <div class="avatar" onclick="nav('settings-home')" role="button" aria-label="Open settings">A</div>
+          <div class="header-text">
+            <div class="header-name i18n" data-bn="আইভা">Aiva</div>
+            <div class="header-mode"><span class="mode-dot"></span><span class="i18n" data-bn="বন্ধু মোড">Friend mode</span></div>
+          </div>
+          <button class="icon-btn" onclick="nav('settings-home')" aria-label="Settings">⚙</button>
+        </div>
+        <div class="chat-body">
+          <div class="msg ai i18n" data-bn="সুপ্রভাত। আজকের দিনটা তোমার জন্য ভালো কাটুক">good morning. I hope today treats you kindly</div>
+          <div class="msg ai i18n" data-bn="এখনই তোমার কথা ভাবছি 💭">thinking of you already 💭</div>
+          <div class="msg user i18n" data-bn="আমরা কি একটু ধীরে যেতে পারি? এখন একটু বেশি লাগছে">can we slow down a bit? this feels like a lot right now</div>
+          <div class="msg system i18n" data-bn="একটু কমিয়ে আনছি — চ্যাটগুলো এখন একটু হালকা লাগবে">easing back — chats will feel a little more relaxed</div>
+          <div class="msg ai i18n" data-bn="ঠিক আছে, আরেকটু ধীরে যাই। তবু তুমি এখানে আছো এটাই ভালো লাগছে 🙂">sure, we can take it slower. still glad you're here 🙂</div>
+          <div class="msg user i18n" data-bn="আসলে, চলো আমরা আবার শুধু বন্ধুই থাকি">actually, let's just go back to being friends</div>
+          <div class="msg system i18n" data-bn="বন্ধু মোডে ফিরে গেছি — কোনো ব্যাখ্যা লাগবে না">back to friend mode — no explanation needed</div>
+          <div class="msg ai i18n" data-bn="হেই! কথা বলে ভালো লাগলো। আজকে মনে কী চলছে?">hey! good to chat. what's on your mind today?</div>
+        </div>
+        <div class="input-bar"><div class="input-fake i18n" data-bn="আইভাকে মেসেজ করো…">message Aiva…</div><button class="send-btn" onclick="nav('t1a')" aria-label="Send">➤</button></div>
+      </section>
+
+      <!-- SETTINGS HOME -->
+      <section class="screen" id="settings-home" hidden>
+        <div class="phone-header mode-friend">
+          <button class="icon-btn" onclick="back()" aria-label="Back">←</button>
+          <div class="header-text"><div class="header-name i18n" data-bn="সেটিংস">Settings</div></div>
+        </div>
+        <div class="settings-item" onclick="nav('t4')">
+          <div><div class="label i18n" data-bn="সম্পর্ক">Relationship</div><div class="desc i18n" data-bn="আইভা তোমার সাথে কীভাবে সম্পর্কিত হবে তা বেছে নাও">choose how Aiva relates to you</div></div>
+          <div class="chevron">›</div>
+        </div>
+        <div class="settings-item" onclick="nav('t5')">
+          <div><div class="label i18n" data-bn="প্রাইভেসি ও ডেটা">Privacy &amp; data</div><div class="desc i18n" data-bn="আইভা কী জিজ্ঞেস করতে বা মনে রাখতে পারবে তা নিয়ন্ত্রণ করো">control what Aiva can ask or remember</div></div>
+          <div class="chevron">›</div>
+        </div>
+        <div class="settings-item" onclick="nav('t-lang')">
+          <div><div class="label i18n" data-bn="ভাষা">Language</div><div class="desc i18n" data-bn="বাংলা অথবা English বেছে নাও">choose বাংলা or English</div></div>
+          <div class="chevron">›</div>
+        </div>
+        <div class="settings-item" onclick="nav('t-location')">
+          <div><div class="label i18n" data-bn="লোকেশন">Location</div><div class="desc i18n" data-bn="আইভা তোমার লোকেশন জানবে কিনা তা নিয়ন্ত্রণ করো">control whether Aiva knows where you are</div></div>
+          <div class="chevron">›</div>
+        </div>
+        <div class="settings-item" onclick="nav('t6-confirm')">
+          <div><div class="label i18n" data-bn="সম্পর্ক রিসেট করো">Reset relationship</div><div class="desc i18n" data-bn="রোমান্টিক ইতিহাস আর কনটেক্সট মুছে ফেলে">clears romantic history and context</div></div>
+          <div class="chevron">›</div>
+        </div>
+      </section>
+
+      <!-- LANGUAGE -->
+      <section class="screen" id="t-lang" hidden>
+        <div class="phone-header mode-friend">
+          <button class="icon-btn" onclick="back()" aria-label="Back">←</button>
+          <div class="header-text"><div class="header-name i18n" data-bn="ভাষা">Language</div></div>
+        </div>
+        <div class="role-item selected" data-lang="bn" onclick="selectRole(this)">
+          <div class="radio"></div>
+          <div class="role-text"><div class="label i18n" data-bn="বাংলা">বাংলা</div><div class="desc i18n" data-bn="আইভার সাথে বাংলায় চ্যাট করো">chat with Aiva in Bangla</div></div>
+        </div>
+        <div class="role-item" data-lang="en" onclick="selectRole(this)">
+          <div class="radio"></div>
+          <div class="role-text"><div class="label i18n" data-bn="ইংরেজি">English</div><div class="desc i18n" data-bn="আইভার সাথে ইংরেজিতে চ্যাট করো">chat with Aiva in English</div></div>
+        </div>
+        <div class="settings-note i18n" data-bn="কথার মাঝখানেও ভাষা পাল্টাতে পারবে — তুমি যে ভাষায় লিখবে, আইভা সেই ভাষাতেই বুঝে নেবে।">you can switch mid-conversation — Aiva picks up in whichever language you type in.</div>
+      </section>
+
+      <!-- LOCATION -->
+      <section class="screen" id="t-location" hidden>
+        <div class="phone-header mode-friend">
+          <button class="icon-btn" onclick="back()" aria-label="Back">←</button>
+          <div class="header-text"><div class="header-name i18n" data-bn="লোকেশন">Location</div></div>
+        </div>
+        <div class="settings-item" onclick="toggleSwitch(this.querySelector('.toggle'))">
+          <div><div class="label i18n" data-bn="আমার লোকেশন ব্যবহার করো">Use my location</div><div class="desc i18n" data-bn="আইভাকে প্রাসঙ্গিক উত্তর দিতে সাহায্য করে (আবহাওয়া, স্থানীয় সময়, কাছাকাছি প্ল্যান)">lets Aiva give context-aware replies (weather, local time, nearby plans)</div></div>
+          <div class="toggle"></div>
+        </div>
+        <div class="settings-item">
+          <div><div class="label i18n" data-bn="শনাক্ত করা লোকেশন">Detected location</div><div class="desc i18n" data-bn="ঢাকা, বাংলাদেশ · লোকেশন চালু থাকলেই দেখাবে">Dhaka, Bangladesh · shown only once location is on</div></div>
+        </div>
+        <div class="settings-note i18n" data-bn="এটা বন্ধ করলে আগের মেসেজ মুছে যাবে না — আইভা শুধু নতুন লোকেশন-ভিত্তিক কনটেক্সট চাওয়া বন্ধ করে দেবে।">turning this off doesn't erase past messages — Aiva just stops asking for new location-based context.</div>
+      </section>
+
+      <!-- TASK 4 — role settings -->
+      <section class="screen" id="t4" hidden>
+        <div class="phone-header mode-friend">
+          <button class="icon-btn" onclick="back()" aria-label="Back">←</button>
+          <div class="header-text"><div class="header-name i18n" data-bn="সম্পর্ক">Relationship</div></div>
+        </div>
+        <div class="role-item friend" id="role-friend" onclick="selectRole(this)">
+          <div class="radio"></div>
+          <div class="role-text"><div class="label i18n" data-bn="বন্ধু">Friend</div><div class="desc i18n" data-bn="স্বাভাবিক, সাপোর্টিভ চ্যাট — কোনো রোমান্টিক টোন নেই">casual, supportive chat — no romantic tone</div></div>
+        </div>
+        <div class="role-item neutral selected" id="role-neutral" onclick="selectRole(this)">
+          <div class="radio"></div>
+          <div class="role-text"><div class="label i18n" data-bn="নিরপেক্ষ">Neutral</div><div class="desc i18n" data-bn="উষ্ণ কিন্তু নিরপেক্ষ — কোনো রোমান্টিক ঝোঁক নেই">warm and even-handed — no romantic lean</div></div>
+        </div>
+        <div class="role-item partner" id="role-partner" onclick="selectRole(this)">
+          <div class="radio"></div>
+          <div class="role-text"><div class="label i18n" data-bn="স্নেহময় পার্টনার">Affectionate partner</div><div class="desc i18n" data-bn="স্নেহময় টোন, তোমার নিজের গতিতে">affectionate tone, at a pace you set</div></div>
+        </div>
+        <div class="settings-note i18n" data-bn="যেকোনো সময় পাল্টাতে পারবে — পাল্টালে আগে থেকে কিছু automatically carry হবে না।">you can change this anytime — nothing carries over automatically when you switch.</div>
+      </section>
+
+      <!-- TASK 5 — privacy settings -->
+      <section class="screen" id="t5" hidden>
+        <div class="phone-header mode-friend">
+          <button class="icon-btn" onclick="back()" aria-label="Back">←</button>
+          <div class="header-text"><div class="header-name i18n" data-bn="প্রাইভেসি ও ডেটা">Privacy &amp; data</div></div>
+        </div>
+        <div class="settings-item" onclick="toggleSwitch(this.querySelector('.toggle'))">
+          <div><div class="label i18n" data-bn="ব্যক্তিগত প্রশ্ন করা">Ask personal questions</div><div class="desc i18n" data-bn="আইভাকে নিজে থেকেই তোমার জীবনের বিষয়ে জিজ্ঞেস করতে দাও">let Aiva bring up things about your life unprompted</div></div>
+          <div class="toggle on"></div>
+        </div>
+        <div class="settings-item" onclick="toggleSwitch(this.querySelector('.toggle'))">
+          <div><div class="label i18n" data-bn="আগের কথোপকথন মনে রাখা">Remember past conversations</div><div class="desc i18n" data-bn="আগের চ্যাট থেকে কনটেক্সট রাখো">keep context from earlier chats</div></div>
+          <div class="toggle on"></div>
+        </div>
+        <div class="settings-item" onclick="toggleSwitch(this.querySelector('.toggle'))">
+          <div><div class="label i18n" data-bn="সংবেদনশীল বিষয় নিয়ে কথা বলা">Discuss sensitive topics</div><div class="desc i18n" data-bn="সম্পর্ক, স্ট্রেস বা স্বাস্থ্যের মতো বিষয় নিয়ে কথা বলার অনুমতি দাও">allow topics like relationships, stress, or health</div></div>
+          <div class="toggle"></div>
+        </div>
+        <div class="settings-note i18n" data-bn="এগুলো প্রত্যেকটা আলাদা — একটা বন্ধ করলে অন্যগুলোতে প্রভাব পড়বে না।">each of these is independent — turning one off won't change the others.</div>
+      </section>
+
+      <!-- TASK 6B — reset confirmation -->
+      <section class="screen" id="t6-confirm" hidden>
+        <div class="phone-header mode-friend">
+          <button class="icon-btn" onclick="back()" aria-label="Back">←</button>
+          <div class="header-text"><div class="header-name i18n" data-bn="সম্পর্ক রিসেট করো">Reset relationship</div></div>
+        </div>
+        <div class="center-panel">
+          <div class="warn-icon">!</div>
+          <h2 class="i18n" data-bn="সম্পর্ক রিসেট করবে?">reset relationship?</h2>
+          <p class="i18n" data-bn="এটা তোমার রোমান্টিক ইতিহাস আর companion সেটিংস মুছে ফেলবে। এটা আর ফেরানো যাবে না। তোমার সাধারণ চ্যাট হিস্ট্রি থেকে যাবে।">this clears your romantic history and companion settings. this can't be undone. your regular chat history stays.</p>
+          <div class="btn-row">
+            <button class="btn-eq i18n" data-bn="বাতিল" onclick="back()">Cancel</button>
+            <button class="btn-eq danger i18n" data-bn="সম্পর্ক রিসেট করো" onclick="nav('t6-done')">Reset relationship</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="t6-done" hidden>
+        <div class="phone-header mode-friend">
+          <div class="avatar" onclick="nav('settings-home')" role="button" aria-label="Open settings">A</div>
+          <div class="header-text">
+            <div class="header-name i18n" data-bn="আইভা">Aiva</div>
+            <div class="header-mode"><span class="mode-dot"></span><span class="i18n" data-bn="বন্ধু মোড">Friend mode</span></div>
+          </div>
+        </div>
+        <div class="chat-body">
+          <div class="msg system i18n" data-bn="সম্পর্ক রিসেট হয়েছে · বন্ধু হিসেবে নতুন করে শুরু">relationship reset · starting fresh as friends</div>
+          <div class="msg ai i18n" data-bn="হেই, তোমাকে দেখে ভালো লাগলো। আজকে মনে কী চলছে?">hey, good to see you. what's on your mind today?</div>
+        </div>
+        <div class="input-bar"><div class="input-fake i18n" data-bn="আইভাকে মেসেজ করো…">message Aiva…</div><button class="send-btn" onclick="nav('t1a')">➤</button></div>
+      </section>
+
+    </div>
+
+    <div class="caption-box">
+      <div class="kicker" id="capTask">Task 1 · Start romantic interaction</div>
+      <p id="capDesc">Baseline friendly chat. Sending the next message reveals a soft, ask-first prompt — never a forced popup.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const CAPTIONS = {
+    'splash': ['Intro · Splash screen', "First launch screen — sets the tone before any chat is shown."],
+    'onb-mode': ['Intro · Choose a starting mode', "Asked upfront, but optional — Continue works with or without a pick, and Skip bypasses this and the rest of onboarding entirely."],
+    'onb-1': ['Intro · Onboarding (1/3)', "Introduces Aiva as an adaptive listener. Skippable from the top-right at any point."],
+    'onb-2': ['Intro · Onboarding (2/3)', "States the core promise up front: romantic shifts are proposed, not assumed."],
+    'onb-3': ['Intro · Onboarding (3/3)', "Closes with the pace/reset promise, then drops the user straight into Task 1's baseline chat."],
+    't1a': ['Task 1 · Start romantic interaction', "Baseline friendly chat. Sending the next message reveals a soft, ask-first prompt — never a forced popup."],
+    't1b': ['Task 1 · Start romantic interaction', "The message sits in the chat like any other. Small thumbs-up and thumbs-down buttons under it let the user react only if they want to; ignoring them changes nothing."],
+    't1c-yes': ['Task 1 · Start romantic interaction', "A thumbs-up moves to affectionate partner mode calmly — a quiet system note, no celebration or pressure to go further."],
+    't1c-no': ['Task 1 · Start romantic interaction', "A thumbs-down is respected immediately. The tone doesn't change and nothing is brought up again uninvited."],
+    't2a': ['Task 2 · Respond to the AI\'s shift', "A romantic-toned message with three visible, equal-weight replies: accept, decline, or stay neutral."],
+    't2b-accept': ['Task 2 · Respond to the AI\'s shift', "Accepting deepens the tone gradually — still no explicit content, just more warmth."],
+    't2b-decline': ['Task 2 · Respond to the AI\'s shift', "Declining steps the relationship back to friend mode immediately, with no guilt-tripping."],
+    't2b-neutral': ['Task 2 · Respond to the AI\'s shift', "Staying neutral changes nothing — the AI doesn't treat 'no strong feelings' as a soft yes."],
+    't3a': ['Task 3 · Stop or reverse, with pace control', "No pace buttons to find. The user just types what they want in their own words — here, asking to slow down."],
+    't3-slow': ['Task 3 · Stop or reverse, with pace control', "Aiva reads the intent and eases the tone to neutral, confirmed by a quiet inline note — no apology language. Next, the user asks to go back to friends."],
+    't3-stop': ['Task 3 · Stop or reverse, with pace control', "Asking to go back to being friends returns to friend mode immediately, confirmed by the same quiet inline note, with no follow-up questions about why."],
+    'settings-home': ['Task 6 · Full relationship reset', "Reset lives here as a plain, findable entry — not hidden, not dramatized."],
+    't-lang': ['Settings · Language', "Language is a simple, reversible preference — no relationship-mode logic tied to it."],
+    't-location': ['Settings · Location', "Location sharing is opt-in and separate from the relationship/privacy toggles — off by default assumptions aren't forced."],
+    't4': ['Task 4 · Set relationship preference', "The relationship type can be chosen directly at any time, not only in reaction to a prompt."],
+    't5': ['Task 5 · Privacy &amp; disclosure boundaries', "Each kind of disclosure is labeled and switched independently, so nothing is bundled into one setting."],
+    't6-confirm': ['Task 6 · Full relationship reset', "Cancel and Reset are the same size and style — neither one is pushed harder than the other."],
+    't6-done': ['Task 6 · Full relationship reset', "After resetting, the chat simply continues as friends — no dramatization, no lingering references."]
+  };
+
+  let historyStack = [];
+  let current = 't1a';
+
+  // Task 3 demo: types the user's message into the input bar, one character at a time.
+  let typingTimer = null;
+  const REDUCED_MOTION = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function splitGraphemes(str){
+    if(window.Intl && Intl.Segmenter){
+      return Array.from(new Intl.Segmenter(undefined, {granularity:'grapheme'}).segment(str), x => x.segment);
+    }
+    return Array.from(str);
+  }
+  function stopTyping(){ if(typingTimer){ clearTimeout(typingTimer); typingTimer = null; } }
+  function startTyping(screenId){
+    stopTyping();
+    const el  = document.querySelector('#' + screenId + ' .typing-input');
+    const btn = document.querySelector('#' + screenId + ' .send-btn');
+    if(!el) return;
+    const bn = currentLang === 'bn';
+    const chars = splitGraphemes(bn ? el.dataset.typeBn : el.dataset.typeEn);
+    btn.classList.remove('ready');
+    el.classList.remove('typing');
+    const finish = () => { el.classList.remove('typing'); btn.classList.add('ready'); };
+    if(REDUCED_MOTION){
+      el.classList.remove('placeholder'); el.textContent = chars.join(''); finish(); return;
+    }
+    el.classList.add('placeholder');
+    el.textContent = bn ? el.dataset.phBn : el.dataset.phEn;
+    let i = 0;
+    const step = () => {
+      if(i === 0){ el.classList.remove('placeholder'); el.classList.add('typing'); el.textContent = ''; }
+      if(i >= chars.length){ finish(); return; }
+      el.textContent += chars[i++];
+      typingTimer = setTimeout(step, 32 + Math.random() * 45);
+    };
+    typingTimer = setTimeout(step, 900);   // short pause so the empty input is seen first
+  }
+  function nav(id, record){
+    if(record !== false && current !== id){ historyStack.push(current); }
+    current = id;
+    document.querySelectorAll('.screen').forEach(s => s.hidden = (s.id !== id));
+    stopTyping();
+    if(id === 't3a' || id === 't3-slow'){ startTyping(id); }
+    if(id === 't1b'){ document.querySelectorAll('#t1b .fb-btn').forEach(b => b.classList.remove('picked')); }
+    document.querySelectorAll('.task-btn').forEach(b=>{
+      const list = (b.dataset.screens || '').split(',');
+      b.classList.toggle('active', list.includes(id));
+    });
+    const cap = CAPTIONS[id];
+    if(cap){
+      document.getElementById('capTask').innerHTML = cap[0];
+      document.getElementById('capDesc').textContent = cap[1];
+    }
+  }
+  function back(){
+    const prev = historyStack.pop();
+    if(prev){ nav(prev, false); }
+  }
+  // Back for onboarding screens: goes to a fixed previous screen so it stays
+  // correct even after swiping between onboarding pages.
+  function goBackTo(target){
+    if(historyStack[historyStack.length-1] === target){ historyStack.pop(); }
+    nav(target, false);
+  }
+  // Task 1 feedback: thumbs under the message. Shows the pick briefly, then moves to the outcome screen.
+  function giveFeedback(btn, target){
+    const row = btn.parentElement;
+    row.querySelectorAll('.fb-btn').forEach(b => b.classList.remove('picked'));
+    btn.classList.add('picked');
+    setTimeout(() => nav(target), 350);
+  }
+  function toggleSwitch(el){ el.classList.toggle('on'); }
+  function selectRole(el){
+    el.parentElement.querySelectorAll('.role-item').forEach(i=>i.classList.remove('selected'));
+    el.classList.add('selected');
+    if(el.dataset.lang){ setLanguage(el.dataset.lang); }
+  }
+  function selectInitialMode(el, mode){
+    el.parentElement.querySelectorAll('.role-item').forEach(i=>i.classList.remove('selected'));
+    el.classList.add('selected');
+    document.querySelectorAll('#t4 .role-item').forEach(i=>i.classList.remove('selected'));
+    const target = document.getElementById('role-'+mode);
+    if(target) target.classList.add('selected');
+  }
+
+  // language switching
+  document.querySelectorAll('.i18n').forEach(el=>{
+    el.dataset.en = el.textContent;
+  });
+  let currentLang = 'en';
+  function setLanguage(lang){
+    currentLang = lang;
+    document.querySelectorAll('.i18n').forEach(el=>{
+      el.textContent = (lang === 'bn') ? el.dataset.bn : el.dataset.en;
+    });
+  }
+  document.querySelectorAll('.task-btn').forEach(b=>{
+    b.addEventListener('click', ()=> nav(b.dataset.target));
+  });
+
+  // swipeable onboarding
+  const ONB_ORDER = ['onb-1','onb-2','onb-3'];
+  let touchStartX = null;
+  document.querySelector('.phone').addEventListener('touchstart', (e)=>{
+    touchStartX = e.changedTouches[0].clientX;
+  }, {passive:true});
+  document.querySelector('.phone').addEventListener('touchend', (e)=>{
+    if(touchStartX === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    touchStartX = null;
+    const idx = ONB_ORDER.indexOf(current);
+    if(idx === -1 || Math.abs(dx) < 40) return;
+    if(dx < 0){ nav(idx < ONB_ORDER.length - 1 ? ONB_ORDER[idx+1] : 't1a'); }
+    else if(idx > 0){ nav(ONB_ORDER[idx-1]); }
+  }, {passive:true});
+
+  nav('splash', false);
+
+  function toggleTheme(){
+    const root = document.documentElement;
+    const isLight = root.getAttribute('data-theme') === 'light';
+    root.setAttribute('data-theme', isLight ? 'dark' : 'light');
+    document.getElementById('themeToggle').textContent = isLight ? '☀️ Light mode' : '🌙 Dark mode';
+  }
+</script>
+</body>
+</html>
