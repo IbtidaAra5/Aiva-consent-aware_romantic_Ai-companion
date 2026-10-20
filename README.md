@@ -4,22 +4,6 @@
 
 ### Designing Consent-Aware Relationship Transitions in AI Companions
 
-
-## 📑 Table of Contents
-1.[Overview](#-overview)
-2.[Research Questions](#-research-questions)
-3.[Project Pipeline](#-project-pipeline)
-4.[Formative Findings](#-formative-findings)
-5.[Design Decisions](#-design-decisions)
-6.[The Aiva Prototype](#-the-aiva-prototype)
-7.[Usability Evaluation](#-usability-evaluation)
-8.[Limitations and Future Work](#-limitations-and-future-work)
-9.[Gallery](#-gallery)
-10.[Repository Structure](#-repository-structure)
-11.[Ethics and Data](#-ethics-and-data)
-
----
-
 **Aiva** · a mobile AI-companion prototype where *you* decide if, when, and how a friendship turns romantic
 
 ![Course](https://img.shields.io/badge/Course-Human--Computer%20Interaction-8a5cf6?style=flat-square)
