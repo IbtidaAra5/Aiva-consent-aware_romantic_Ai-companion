@@ -6,18 +6,17 @@
 
 
 ## 📑 Table of Contents
-
-1. [Overview](#-overview)
-2. [Research Questions](#-research-questions)
-3. [Project Pipeline](#-project-pipeline)
-4. [Formative Findings](#-formative-findings)
-5. [Design Decisions](#-design-decisions)
-6. [The Aiva Prototype](#-the-aiva-prototype)
-7. [Usability Evaluation](#-usability-evaluation)
-8. [Limitations and Future Work](#-limitations-and-future-work)
-9. [Gallery](#-gallery)
-10. [Repository Structure](#-repository-structure)
-11. [Ethics and Data](#-ethics-and-data)
+1.[Overview](#-overview)
+2.[Research Questions](#-research-questions)
+3.[Project Pipeline](#-project-pipeline)
+4.[Formative Findings](#-formative-findings)
+5.[Design Decisions](#-design-decisions)
+6.[The Aiva Prototype](#-the-aiva-prototype)
+7.[Usability Evaluation](#-usability-evaluation)
+8.[Limitations and Future Work](#-limitations-and-future-work)
+9.[Gallery](#-gallery)
+10.[Repository Structure](#-repository-structure)
+11.[Ethics and Data](#-ethics-and-data)
 
 ---
 
