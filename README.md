@@ -191,6 +191,8 @@ The updated screens are in the [Gallery](#-gallery).
 
 ---
 
+<a id="gallery"></a>
+
 ## 🖼️ Gallery
 
 ### Aiva prototype: selected screens
@@ -252,22 +254,23 @@ One prototype two themes available
 
 ### Affinity diagrams from the five interviews
 
+
 <table>
   <tr>
-    <td align="center"><img src="https://github.com/user-attachments/assets/908d7da5-af4b-4988-a8d4-67bf882a65af" width="481" alt="Emotional Connection"><br><sub>Emotional Connection</sub></td>
-    <td align="center"><img src="https://github.com/user-attachments/assets/5a210303-956e-4bdd-b77b-7e33b9a7c270" width="490" alt="Reaction to Unexpected Romantic Behaviour"><br><sub>Reaction to Unexpected Romantic Behaviour</sub></td>
+    <td align="center" valign="top"><img src="https://github.com/user-attachments/assets/908d7da5-af4b-4988-a8d4-67bf882a65af" width="300" alt="Emotional Connection"><br><sub>Emotional Connection</sub></td>
+    <td align="center" valign="top"><img src="https://github.com/user-attachments/assets/5a210303-956e-4bdd-b77b-7e33b9a7c270" width="300" alt="Reaction to Unexpected Romantic Behaviour"><br><sub>Reaction to Unexpected Romantic Behaviour</sub></td>
+    <td align="center" valign="top"><img src="https://github.com/user-attachments/assets/79c75d1a-717d-4099-a6a2-81b7ac9ab338" width="300" alt="Consent, Initiative and User Preference"><br><sub>Consent, Initiative &amp; User Preference</sub></td>
   </tr>
   <tr>
-   <td align="center"><img src="https://github.com/user-attachments/assets/79c75d1a-717d-4099-a6a2-81b7ac9ab338" width="605" alt="Consent, Initiative and User Preference"><br><sub>Consent, Initiative &amp; User Preference</sub></td>
-  <td align="center"><img src="https://github.com/user-attachments/assets/91c3d741-a6cf-4087-a9e6-e31ac0e8ef1a" width="546" alt="Rejection, Boundary Handling and Manipulation"><br><sub>Rejection, Boundary Handling &amp; Manipulation</sub></td>
-
+    <td align="center" valign="top"><img src="https://github.com/user-attachments/assets/91c3d741-a6cf-4087-a9e6-e31ac0e8ef1a" width="300" alt="Rejection, Boundary Handling and Manipulation"><br><sub>Rejection, Boundary Handling &amp; Manipulation</sub></td>
+    <td align="center" valign="top"><img src="https://github.com/user-attachments/assets/83c06eab-21c2-4f31-8653-c31cba22e3a6" width="300" alt="Privacy and Personal Disclosure"><br><sub>Privacy &amp; Personal Disclosure</sub></td>
+    <td align="center" valign="top"><img src="https://github.com/user-attachments/assets/0a4ac0e4-1e52-49ee-b7b6-6250218b5d04" width="300" alt="Impact on Real-Life Relationships"><br><sub>Impact on Real-Life Relationships</sub></td>
   </tr>
   <tr>
-   <td align="center"><img src="https://github.com/user-attachments/assets/83c06eab-21c2-4f31-8653-c31cba22e3a6" width="563" alt="Privacy and Personal Disclosure"><br><sub>Privacy &amp; Personal Disclosure</sub></td>
-   <td align="center"><img src="https://github.com/user-attachments/assets/0a4ac0e4-1e52-49ee-b7b6-6250218b5d04" width="477" alt="Impact on Real-Life Relationships"><br><sub>Impact on Real-Life Relationships</sub></td>
-
+    <td align="center" valign="top" colspan="3"><img src="https://github.com/user-attachments/assets/61d1bed0-f4fb-44ae-853f-8ef70d4d2b7e" width="300" alt="Relationship with AI"><br><sub>Relationship with AI</sub></td>
   </tr>
 </table>
+
 
 ---
 
