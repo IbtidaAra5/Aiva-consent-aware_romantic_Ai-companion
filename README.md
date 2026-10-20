@@ -127,7 +127,8 @@ Aiva is a mobile AI-companion interface with **24 screens**. The current relatio
 | **Relationship reset** | Confirmation required, then returns to a fresh friendly state. |
 
 
-**Prototype link:** [Open in Figma](https://www.figma.com/design/ZfR6iCctLhlHHjnO4qd8gT/HCI-Orange?node-id=2243-898&t=U34qKq2RrJAyXTeo-1)
+**Prototype link:** <https://www.figma.com/design/ZfR6iCctLhlHHjnO4qd8gT/HCI-Orange?node-id=2243-898&t=U34qKq2RrJAyXTeo-1>
+
 ---
 
 ## 🧪 Usability Evaluation
