@@ -233,17 +233,31 @@ Screen-8:Settings & reset relationship
 One prototype two themes available
 
 
-</div>
 
 ### After usability testing: revised screens
 
+</div>
+
 <div align="center">
 
-![Revised screens](docs/figures/aiva-revised-screens.png)
 
-*Updated Screens 2-6: clearer skip button, natural-chat tutorial, response tutorial, settings tutorial, larger settings icon.*
+<img src="https://github.com/user-attachments/assets/d418ef05-9bff-481b-b695-87851cf578fe" width="800" alt="Updated Aiva screens 2-4">
+<br>
+<sub>Updated Aiva screens 2-4</sub>
+
+<br><br>
+
+<img src="https://github.com/user-attachments/assets/539ac7ef-627b-4d01-8eb6-0c741b36cb82" width="800" alt="Updated Aiva screens 5-6">
+<br>
+<sub>Updated Aiva screens 5-6</sub>
+
+<br><br>
+
+<em>Updated Screens 2-6: clearer skip button, natural-chat tutorial, response tutorial, settings tutorial, larger settings icon.</em>
 
 </div>
+
+
 
 ### Affinity diagrams from the five interviews
 
