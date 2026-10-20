@@ -14,10 +14,6 @@
 ![Usability Test](https://img.shields.io/badge/Usability%20test-8%20participants-eab308?style=flat-square)
 ![Task Completion](https://img.shields.io/badge/Task%20completion-85.4%25-brightgreen?style=flat-square)
 
-[📄 Read the Report](docs/report/From-Friend-to-Partner_Group-Orange.pdf) ·
-[🎨 View the Prototype](#-the-aiva-prototype) ·
-[📊 Evaluation Results](#-usability-evaluation)
-
 </div>
 
 ---
@@ -130,10 +126,8 @@ Aiva is a mobile AI-companion interface with **24 screens**. The current relatio
 | **Settings hub** | Relationship controls, privacy and data options (personal questions, remembering past conversations, sensitive topics), language, location, light/dark theme. |
 | **Relationship reset** | Confirmation required, then returns to a fresh friendly state. |
 
-See the [Gallery](#-gallery) for all screens.
 
-🔗 **Prototype link:** `<https://www.figma.com/design/ZfR6iCctLhiHHjnO4qd8gT/HCI-Orange?node-id=2243-898&t=U34qKq2RrJAyXTeo-1>`
-
+**Prototype link:** [Open in Figma](https://www.figma.com/design/ZfR6iCctLhlHHjnO4qd8gT/HCI-Orange?node-id=2243-898&t=U34qKq2RrJAyXTeo-1)
 ---
 
 ## 🧪 Usability Evaluation
@@ -169,7 +163,6 @@ Eight participants from the target population completed six task groups **withou
 | Settings were hard to find | Larger gear icon and a tutorial preview of Relationship, Privacy & data, and Reset relationship |
 | Participants wanted clearer guidance | Screens 3-5 reworked into short demonstrations instead of general descriptions |
 
-The updated screens are in the [Gallery](#-gallery).
 
 ---
 
@@ -191,7 +184,6 @@ The updated screens are in the [Gallery](#-gallery).
 
 ---
 
-<a id="gallery"></a>
 
 ## 🖼️ Gallery
 
