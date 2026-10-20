@@ -215,7 +215,7 @@ Screen-2:Task-1:Choose how romantic interaction can begin
 
 Screen-3:Task-2:Choose Response type when the AI starts becoming romantic
 
-<img width="681" height="396" alt="screen-4(Task 3)" src="https://github.com/user-attachments/assets/e119acac-2e42-4957-8ff1-264746d38c75" />
+<img width="665" height="403" alt="screen-4(Task-3)" src="https://github.com/user-attachments/assets/6b29e8bb-f847-4ff5-bab8-fb21aa0bebde" />
 
 Screen-4:Task-3:Stop or reverse romantic behavior
 
